@@ -42,8 +42,6 @@ const FlashList = (): React.ReactNode => {
     fetchPhotos()
   }, [])
 
-  console.log('logs', photos.current)
-
   if (!batchPerPhotos) {
     return null
   }

@@ -34,14 +34,14 @@ const FlashList = () => {
     )
   }
 
-  const itemContent = (_: number, photo: PhotoItem) => {
+  const itemContent = (idx: number, photo: PhotoItem) => {
     return (
       <div
-        key={photo.id}
+        key={`photo${-idx}`}
         className="flex justify-center w-full h-full flex-1 px-8 py-16"
       >
-        <div className="border-1 justify-center align-self bg-pink-500 border-black w-full h-30 md:w-[40%] ">
-          <p className="text-white">{photo.id}</p>
+        <div className="border-1 flex justify-center items-center bg-pink-500 border-black w-full h-30 md:w-[40%] ">
+          <p className="text-white items-center">{photo.id}</p>
         </div>
       </div>
     )

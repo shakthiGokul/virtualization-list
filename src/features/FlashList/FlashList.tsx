@@ -1,11 +1,21 @@
-import { UIEventHandler, useEffect, useRef, useState } from 'react'
-import { PhotoItem } from './FlashList.type'
+import { useEffect, useRef, useState } from 'react'
 import { Virtuoso } from 'react-virtuoso'
+import { PhotoItem } from './FlashList.type'
+import {
+  getBatchPerPhotos,
+  getUpdatedPhotos,
+  HashTableBatchPerScrolls,
+} from './FlashList.helper'
 
 const BATCH_PER_SCROLL = 10
 
-const FlashList = () => {
-  const photos = useRef<Array<PhotoItem>>([])
+/**
+ * function component to helps to render the flash list
+ * @returns
+ */
+const FlashList = (): React.ReactNode => {
+  const method = useRef<string>('')
+  const photos = useRef<Array<PhotoItem> | HashTableBatchPerScrolls>([])
   const [batchPerPhotos, setBatchPerPhotos] = useState<Array<PhotoItem>>([])
 
   const currentBatch = useRef(BATCH_PER_SCROLL)
@@ -18,20 +28,38 @@ const FlashList = () => {
         { signal: controller.signal }
       )
       const newPhotos = await response.json()
-      photos.current = newPhotos
-      setBatchPerPhotos(newPhotos.slice(0, BATCH_PER_SCROLL))
+      photos.current =
+        method.current === 'slice-method'
+          ? newPhotos
+          : getBatchPerPhotos(newPhotos, BATCH_PER_SCROLL)
+      const updatedPhotos = getUpdatedPhotos(
+        method.current,
+        photos.current,
+        BATCH_PER_SCROLL
+      )
+      setBatchPerPhotos(updatedPhotos)
     }
     fetchPhotos()
   }, [])
 
-  if (!batchPerPhotos.length) {
+  console.log('photos', photos.current)
+
+  if (!batchPerPhotos) {
     return null
   }
 
-  const onReachEnd = () => {
-    setBatchPerPhotos(
-      photos.current.slice(0, (currentBatch.current += BATCH_PER_SCROLL))
-    )
+  const onReachEnd = (): void => {
+    if (method.current === 'slice-method' && Array.isArray(photos.current)) {
+      return setBatchPerPhotos(
+        photos.current.slice(0, (currentBatch.current += BATCH_PER_SCROLL))
+      )
+    }
+    const currentPhotos = (photos.current as HashTableBatchPerScrolls)[
+      Math.round(currentBatch.current / BATCH_PER_SCROLL)
+    ]
+    const updatedPhotos = batchPerPhotos.concat(currentPhotos)
+    setBatchPerPhotos(updatedPhotos)
+    currentBatch.current += BATCH_PER_SCROLL
   }
 
   const itemContent = (idx: number, photo: PhotoItem) => {

@@ -4,6 +4,7 @@ export type HashTableBatchPerScrolls = {
   [keyof: number]: PhotoItem[]
 }
 
+// O(n) time | O(n) space
 export const getBatchPerPhotos = (
   newPhotos: Array<PhotoItem>,
   batchPerScroll: number

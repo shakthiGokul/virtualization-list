@@ -12,12 +12,15 @@ export const getBatchPerPhotos = (
   const batchPerPhotos: HashTableBatchPerScrolls = {}
   for (let idx = 0; idx < newPhotos.length; idx++) {
     const batchKey = Math.floor(idx / batchPerScroll)
-    if (!batchPerPhotos[batchKey]) batchPerPhotos[batchKey] = []
+    if (!(batchKey in batchPerPhotos)) {
+      batchPerPhotos[batchKey] = []
+    }
     batchPerPhotos[batchKey].push(newPhotos[idx])
   }
   return batchPerPhotos
 }
 
+// O(1) time | O(1) space
 export const getUpdatedPhotos = (
   method: string,
   newPhotos: Array<PhotoItem> | HashTableBatchPerScrolls,

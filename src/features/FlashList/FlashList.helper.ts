@@ -9,15 +9,10 @@ export const getBatchPerPhotos = (
   batchPerScroll: number
 ): HashTableBatchPerScrolls => {
   const batchPerPhotos: HashTableBatchPerScrolls = {}
-  let newBatch: Array<PhotoItem> = []
   for (let idx = 0; idx < newPhotos.length; idx++) {
-    const isThresHoldReached = idx % batchPerScroll == 0
-    if (isThresHoldReached) {
-      const batchKey = idx / batchPerScroll
-      batchPerPhotos[batchKey] = newBatch
-      newBatch = []
-    }
-    newBatch.push(newPhotos[idx])
+    const batchKey = Math.floor(idx / batchPerScroll)
+    if (!batchPerPhotos[batchKey]) batchPerPhotos[batchKey] = []
+    batchPerPhotos[batchKey].push(newPhotos[idx])
   }
   return batchPerPhotos
 }
@@ -28,7 +23,7 @@ export const getUpdatedPhotos = (
   batchPerScroll: number
 ): Array<PhotoItem> => {
   if (method === 'slice-method' && Array.isArray(newPhotos)) {
-    return newPhotos.slice(0, batchPerScroll)
+    return newPhotos.length ? newPhotos.slice(0, batchPerScroll) : []
   }
-  return newPhotos[1] as Array<PhotoItem>
+  return newPhotos ? (newPhotos[0] as Array<PhotoItem>) : []
 }

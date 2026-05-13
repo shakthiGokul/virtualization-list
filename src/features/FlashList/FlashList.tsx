@@ -42,6 +42,8 @@ const FlashList = (): React.ReactNode => {
     fetchPhotos()
   }, [])
 
+  console.log('logs', photos.current)
+
   if (!batchPerPhotos) {
     return null
   }
@@ -55,6 +57,7 @@ const FlashList = (): React.ReactNode => {
     const currentPhotos = (photos.current as HashTableBatchPerScrolls)[
       Math.round(currentBatch.current / BATCH_PER_SCROLL)
     ]
+    if (!currentPhotos) return
     const updatedPhotos = batchPerPhotos.concat(currentPhotos)
     setBatchPerPhotos(updatedPhotos)
     currentBatch.current += BATCH_PER_SCROLL

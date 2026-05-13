@@ -11,7 +11,7 @@ const BATCH_PER_SCROLL = 10
 
 /**
  * function component to helps to render the flash list
- * @returns
+ * @returns {React.ReactNode}
  */
 const FlashList = (): React.ReactNode => {
   const method = useRef<string>('')
@@ -42,8 +42,6 @@ const FlashList = (): React.ReactNode => {
     fetchPhotos()
   }, [])
 
-  console.log('photos', photos.current)
-
   if (!batchPerPhotos) {
     return null
   }
@@ -62,7 +60,7 @@ const FlashList = (): React.ReactNode => {
     currentBatch.current += BATCH_PER_SCROLL
   }
 
-  const itemContent = (idx: number, photo: PhotoItem) => {
+  const itemContent = (idx: number, photo: PhotoItem): React.ReactNode => {
     return (
       <div
         key={`photo${-idx}`}

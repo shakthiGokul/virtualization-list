@@ -1,33 +1,33 @@
-import { PhotoItem } from './FlashList.type'
-
 export type HashTableBatchPerScrolls = {
-  [keyof: number]: PhotoItem[]
+  [keyof: number]: unknown[]
+}
+
+export const isObjectEmpty = (object: object) => {
+  return typeof object == 'object' && JSON.stringify(object) === '{}'
 }
 
 // O(n) time | O(n) space
 export const getBatchPerPhotos = (
-  newPhotos: Array<PhotoItem>,
+  batches: Array<unknown>,
   batchPerScroll: number
 ): HashTableBatchPerScrolls => {
-  const batchPerPhotos: HashTableBatchPerScrolls = {}
-  for (let idx = 0; idx < newPhotos.length; idx++) {
-    const batchKey = Math.floor(idx / batchPerScroll)
-    if (!(batchKey in batchPerPhotos)) {
-      batchPerPhotos[batchKey] = []
-    }
-    batchPerPhotos[batchKey].push(newPhotos[idx])
+  if (!batches || !batches.length) {
+    return {}
   }
-  return batchPerPhotos
+  const batchesPerPagination: HashTableBatchPerScrolls = {}
+  for (let idx = 0; idx < batches.length; idx++) {
+    const batchKey = Math.floor(idx / batchPerScroll)
+    if (!(batchKey in batches)) {
+      batchesPerPagination[batchKey] = []
+    }
+    batchesPerPagination[batchKey].push(batches[idx])
+  }
+  return batchesPerPagination
 }
 
 // O(1) time | O(1) space
 export const getUpdatedPhotos = (
-  method: string,
-  newPhotos: Array<PhotoItem> | HashTableBatchPerScrolls,
-  batchPerScroll: number
-): Array<PhotoItem> => {
-  if (method === 'slice-method' && Array.isArray(newPhotos)) {
-    return newPhotos.length ? newPhotos.slice(0, batchPerScroll) : []
-  }
-  return newPhotos ? (newPhotos[0] as Array<PhotoItem>) : []
+  newPhotos: HashTableBatchPerScrolls
+): Array<unknown> => {
+  return !isObjectEmpty(newPhotos) ? (newPhotos[0] as Array<unknown>) : []
 }

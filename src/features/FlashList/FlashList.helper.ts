@@ -11,13 +11,10 @@ export const getBatchPerPhotos = (
   batches: Array<unknown>,
   batchPerScroll: number
 ): HashTableBatchPerScrolls => {
-  if (!batches || !batches.length) {
-    return {}
-  }
   const batchesPerPagination: HashTableBatchPerScrolls = {}
   for (let idx = 0; idx < batches.length; idx++) {
     const batchKey = Math.floor(idx / batchPerScroll)
-    if (!(batchKey in batches)) {
+    if (!(batchKey in batchesPerPagination)) {
       batchesPerPagination[batchKey] = []
     }
     batchesPerPagination[batchKey].push(batches[idx])

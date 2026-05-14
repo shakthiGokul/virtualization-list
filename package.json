@@ -1,19 +1,55 @@
 {
-  "name": "virtualization-list",
-  "private": true,
+  "name": "react-batch-scroll",
   "version": "1.0.0",
+  "description": "A high-performance React infinite scroll component using hash table batching for O(1) lookup — faster rendering and painting than traditional slice-based approaches.",
   "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "keywords": [
+    "react",
+    "infinite-scroll",
+    "virtualization",
+    "virtual-list",
+    "hash-table",
+    "performance",
+    "batch-rendering",
+    "react-virtuoso",
+    "large-list",
+    "pagination",
+    "windowing",
+    "typescript",
+    "react-component"
+  ],
+  "author": {
+    "name": "Shakthi Gokul",
+    "email": "shakthigokul05@gmail.com",
+    "url": "https://github.com/shakthiGokul"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shakthiGokul/virtualization-list.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shakthiGokul/virtualization-list/issues"
+  },
+  "homepage": "https://github.com/shakthiGokul/virtualization-list#readme",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "react": "19.2.6",
-    "react-dom": "19.2.6",
-    "react-virtuoso": "^4.18.7",
-    "tailwindcss": "4.3.0"
+  "peerDependencies": {
+    "react": ">=18",
+    "react-dom": ">=18",
+    "react-virtuoso": ">=4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -29,6 +65,10 @@
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
     "prettier": "^3.8.3",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-virtuoso": "^4.18.7",
+    "tailwindcss": "4.3.0",
     "typescript": "^6.0.3",
     "vite": "^8.0.12"
   }

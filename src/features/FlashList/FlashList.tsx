@@ -1,3 +1,5 @@
+'use client'
+
 import { useMemo, useRef, useState } from 'react'
 import { Virtuoso, VirtuosoProps } from 'react-virtuoso'
 import { getBatchPerList } from './FlashList.helper'

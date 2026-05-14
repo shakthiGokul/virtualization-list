@@ -3,7 +3,7 @@ import { Virtuoso, VirtuosoProps } from 'react-virtuoso'
 import { getBatchPerPhotos } from './FlashList.helper'
 
 type FlashListProps = {
-  batchPerScroll?: number // gy default 20
+  batchPerScroll?: number // by default 20
 }
 
 /**
@@ -25,6 +25,13 @@ const FlashList: React.FC<FlashListProps & VirtuosoProps<unknown, unknown>> = (
   )
 
   const currentBatch = useRef(batchPerScroll)
+  const prevDataRef = useRef(data)
+
+  if (prevDataRef.current !== data) {
+    prevDataRef.current = data
+    setBatches(batchesHahTable[0] ?? [])
+    currentBatch.current = batchPerScroll
+  }
 
   const onReachEnd = (): void => {
     const currentPhotos =

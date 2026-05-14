@@ -1,28 +1,24 @@
 import { useMemo, useRef, useState } from 'react'
 import { Virtuoso, VirtuosoProps } from 'react-virtuoso'
-import { getBatchPerPhotos } from './FlashList.helper'
+import { getBatchPerList } from './FlashList.helper'
 
-type FlashListProps = {
+type FlashListProps<T> = {
   batchPerScroll?: number // by default 20
-}
+} & VirtuosoProps<T, unknown>
 
 /**
  * Component helps to render the Flash List locally
  * @param {FlashListProps}
  * @returns {React.ReactNode}
  */
-const FlashList: React.FC<FlashListProps & VirtuosoProps<unknown, unknown>> = (
-  props
-): React.ReactNode => {
+const FlashList = <T,>(props: FlashListProps<T>): React.ReactNode => {
   const { batchPerScroll = 20, data = [], ...virtuosoProps } = props
 
   const batchesHahTable = useMemo(() => {
-    return getBatchPerPhotos(data as Array<unknown>, batchPerScroll)
-  }, [data])
+    return getBatchPerList(data as Array<T>, batchPerScroll)
+  }, [data, batchPerScroll])
 
-  const [batches, setBatches] = useState<Array<unknown>>(
-    batchesHahTable[0] ?? []
-  )
+  const [batches, setBatches] = useState<Array<T>>(batchesHahTable[0] ?? [])
 
   const currentBatch = useRef(batchPerScroll)
   const prevDataRef = useRef(data)
@@ -34,10 +30,10 @@ const FlashList: React.FC<FlashListProps & VirtuosoProps<unknown, unknown>> = (
   }
 
   const onReachEnd = (): void => {
-    const currentPhotos =
+    const newBatches =
       batchesHahTable[Math.round(currentBatch.current / batchPerScroll)]
-    if (!currentPhotos) return
-    const updatedPhotos = batches.concat(currentPhotos)
+    if (!newBatches) return
+    const updatedPhotos = batches.concat(newBatches)
     setBatches(updatedPhotos)
     currentBatch.current += batchPerScroll
   }

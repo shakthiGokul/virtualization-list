@@ -3,17 +3,18 @@ import { Virtuoso, VirtuosoProps } from 'react-virtuoso'
 import { getBatchPerPhotos, HashTableBatchPerScrolls } from './FlashList.helper'
 
 type FlashListProps = {
-  batchPerScroll: number
+  batchPerScroll?: number // gy default 20
 }
 
 /**
- * function component to helps to render the flash list
+ * Component helps to render the Flash List locally
+ * @param {FlashListProps}
  * @returns {React.ReactNode}
  */
 const FlashList: React.FC<FlashListProps & VirtuosoProps<unknown, unknown>> = (
   props
 ): React.ReactNode => {
-  const { batchPerScroll, data = [], ...virtuosoProps } = props
+  const { batchPerScroll = 20, data = [], ...virtuosoProps } = props
   const batchesHahTable = useRef<HashTableBatchPerScrolls>(
     getBatchPerPhotos(data as Array<unknown>, batchPerScroll)
   )

@@ -162,9 +162,6 @@ Space = k + n = n/C + n = O(n)
 
 ## 🔗 Proof & Comparison
 
-Full implementation, benchmarks, and comparison available in the source repo:
-**[github.com/shakthiGokul/virtualization-list](https://github.com/shakthiGokul/virtualization-list)**
-
 - [`FlashList.tsx`](https://github.com/shakthiGokul/virtualization-list/blob/main/src/features/FlashList/FlashList.tsx) — component implementation
 - [`FlashList.helper.ts`](https://github.com/shakthiGokul/virtualization-list/blob/main/src/features/FlashList/FlashList.helper.ts) — `getBatchPerList` algorithm
 
@@ -174,12 +171,60 @@ Full implementation, benchmarks, and comparison available in the source repo:
 
 ### `<FlashList<T> />`
 
+> `FlashList` is built on top of [react-virtuoso](https://virtuoso.dev/). All `VirtuosoProps` are passed through directly.
+
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `data` | `T[]` | `[]` | Array of items to render |
 | `batchPerScroll` | `number` | `20` | Items to load per scroll batch |
 | `itemContent` | `(index, item: T) => ReactNode` | required | Render function per item |
-| `...rest` | `VirtuosoProps<T>` | — | All react-virtuoso props supported |
+| `...rest` | `VirtuosoProps<T>` | — | All react-virtuoso props passed through |
+
+### Passed-through `VirtuosoProps<T>`
+
+All props below are forwarded directly to the underlying `<Virtuoso>` component. `data` and `itemContent` are managed by `FlashList` and cannot be overridden via `...rest`.
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `endReached` | `(index: number) => void` | Called when the user scrolls to the end of the list. Use for infinite loading. |
+| `startReached` | `(index: number) => void` | Called when the user scrolls to the start of the list. |
+| `atBottomStateChange` | `(atBottom: boolean) => void` | Fires with `true`/`false` when the list reaches/leaves the bottom. |
+| `atTopStateChange` | `(atTop: boolean) => void` | Fires with `true`/`false` when the list reaches/leaves the top. |
+| `atBottomThreshold` | `number` | Pixel distance from the bottom to trigger `atBottomStateChange` (default: `4`). |
+| `atTopThreshold` | `number` | Pixel distance from the top to trigger `atTopStateChange` (default: `0`). |
+| `followOutput` | `boolean \| "smooth" \| (isAtBottom: boolean) => "smooth" \| "auto" \| false` | Auto-scroll to the bottom when new items are added. |
+| `initialTopMostItemIndex` | `number \| IndexLocationWithAlign` | Scroll to this item index on first render. |
+| `initialScrollTop` | `number` | Initial scroll offset in pixels. |
+| `initialItemCount` | `number` | Number of items to render for SSR. |
+| `firstItemIndex` | `number` | Offset index for inverse (prepend) infinite scrolling. |
+| `topItemCount` | `number` | Number of items to pin at the top of the list. |
+| `totalCount` | `number` | Total number of items (inferred from `data.length` when `data` is set). |
+| `defaultItemHeight` | `number` | Skip probe render and use this value as the default item height. |
+| `fixedItemHeight` | `number` | Fixed item height — skips per-item measurement for better performance. |
+| `fixedGroupHeight` | `number` | Fixed group header height. Only applies when `fixedItemHeight` is set. |
+| `heightEstimates` | `number[]` | Per-index estimated heights for variable-height lists. Improves initial layout. |
+| `increaseViewportBy` | `number \| { top: number; bottom: number }` | Virtually extend the viewport to pre-render items outside the visible area. |
+| `minOverscanItemCount` | `number \| { top: number; bottom: number }` | Minimum number of items to keep rendered beyond the visible viewport. |
+| `overscan` | `number \| { main: number; reverse: number }` | Chunk scroll rendering to reduce re-renders. |
+| `computeItemKey` | `(index: number, item: T, context: Context) => Key` | Custom key generator for list items. |
+| `itemSize` | `SizeFunction` | Override the default `getBoundingClientRect` height/width measurement. |
+| `components` | `Components<T, Context>` | Customize rendered elements (Header, Footer, ScrollSeekPlaceholder, etc.). |
+| `context` | `Context` | Extra context object passed to custom components and callbacks. |
+| `customScrollParent` | `HTMLElement` | Attach to an external scrollable parent instead of wrapping in its own scroller. |
+| `useWindowScroll` | `boolean` | Use the document/window as the scroller instead of an internal container. |
+| `scrollerRef` | `(ref: HTMLElement \| Window \| null) => void` | Ref callback for the root scroll container DOM element. |
+| `isScrolling` | `(isScrolling: boolean) => void` | Called when scrolling starts or stops. |
+| `rangeChanged` | `(range: ListRange) => void` | Called with the current rendered index range on every scroll. |
+| `itemsRendered` | `(items: ListItem<T>[]) => void` | Called each time the rendered item set changes. |
+| `totalListHeightChanged` | `(height: number) => void` | Called when the total list height changes. |
+| `scrollSeekConfiguration` | `ScrollSeekConfiguration \| false` | Show placeholder components while the user scrolls fast. |
+| `restoreStateFrom` | `StateSnapshot` | Restore a previously saved scroll position and item sizes. |
+| `scrollIntoViewOnChange` | `(params: { context, totalCount, scrollingInProgress }) => ScrollIntoViewLocation \| null \| false` | Programmatically scroll to an item when `totalCount` changes. |
+| `alignToBottom` | `boolean` | Pin items to the bottom when the list is shorter than the viewport. |
+| `horizontalDirection` | `boolean` | Render the list horizontally. Items are positioned with `inline-block`. |
+| `headerFooterTag` | `string` | HTML tag used to wrap Header/Footer components (default: `div`). |
+| `skipAnimationFrameInResizeObserver` | `boolean` | Improve resize performance at the cost of benign console errors on size changes. |
+| `logLevel` | `LogLevel` | Set to `LogLevel.DEBUG` to enable diagnostic console output. |
 
 ### `getBatchPerList<T>(batches, batchPerScroll)`
 
